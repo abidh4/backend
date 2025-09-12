@@ -1,0 +1,16 @@
+const mongoose = require("mongoose");
+const RegisteredExamineeSchema = new mongoose.Schema({
+  rollNumber: { type: String, required: true },
+  eMail: { type: String, required: true, match: /.+\@.+\..+/ },
+  registeredFor: [
+    {
+      examType: { type: String, required: true },
+      semester: { type: Number, required: true },
+      date: { type: Date, required: true },
+      courses: { type: [String], default: [] },
+      payableAmount: { type: Number },
+      pdfBase64: { type: String } // store generated PDF here
+    }
+  ]
+});
+module.exports = mongoose.model("RegisteredExaminee", RegisteredExamineeSchema);

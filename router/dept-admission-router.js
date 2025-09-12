@@ -1,0 +1,14 @@
+const express = require("express");
+const deptAdmissionRouter = express.Router();
+const deptAdmissionController = require("../controller/dept-admission-controller");
+deptAdmissionRouter.post("/admit-student", deptAdmissionController.saveData);
+deptAdmissionRouter.get("/pending-request", deptAdmissionController.sendData);
+deptAdmissionRouter.delete("/delete-entity", deptAdmissionController.deleteEntity);
+deptAdmissionRouter.post("/admit-perm-student", deptAdmissionController.admitStudent);
+deptAdmissionRouter.get("/admitted-students", deptAdmissionController.getAdmittedStudents);
+deptAdmissionRouter.post("/register-exam", deptAdmissionController.registrationReqForExam);
+deptAdmissionRouter.get("/pending-exam-req", deptAdmissionController.getPendingExamRequests);
+deptAdmissionRouter.post("/approve-exam/:_id", deptAdmissionController.approveExamRequest);
+deptAdmissionRouter.delete("/reject-exam/:_id", deptAdmissionController.rejectExamRequest);
+deptAdmissionRouter.get("/get-approved-pdf/:rollNumber/:semester", deptAdmissionController.getApprovedPdf);
+exports.deptAdmissionRouter = deptAdmissionRouter;
