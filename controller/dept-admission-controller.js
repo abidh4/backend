@@ -4,7 +4,7 @@ const admittedStudentModel = require("../model/admitted-student-list");
 const examRegistrationReqModel = require("../model/exam-registration-request-list");
 const RegisteredExamineeModel = require("../model/registered-examinee-list");
 const PDFDocument = require("pdfkit");
-const stream = require("stream");
+const path = require("path");
 exports.saveData = async(req, res, next) => {
   const { studentName,fathersName,mothersName,deptName,studentSession,gender,contactNo, eMail,address,meritPosition} = req.body;
   const studentData = new deptAdmissionModel(
@@ -20,8 +20,6 @@ exports.saveData = async(req, res, next) => {
     res.json({status: false, error: err});
   }
 };
-
-
 exports.sendData = async (req, res, next) => {
   try {
     const candidates = await deptAdmissionModel.find();
@@ -38,8 +36,6 @@ exports.sendData = async (req, res, next) => {
     });
   }
 };
-
-
 exports.deleteEntity = async (req, res,next) => {
   try {
     const { id } = req.body;
@@ -58,9 +54,6 @@ exports.deleteEntity = async (req, res,next) => {
     res.status(500).json({ success: false, message: "Server error while deleting student", error: error.message });
   }
 };
-
-   // admitted students
-
 exports.admitStudent = async (req, res,next) => {
   const { _id, rollNumber, hallName, password } = req.body;
 
@@ -107,13 +100,11 @@ exports.admitStudent = async (req, res,next) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
-
-
 exports.getAdmittedStudents = async (req, res,next) => {
-  try {
-    //const roll = req.user?.roll || req.query.roll ;
-     const roll = 12209008;
+    console.log(req.params.rollNumber);
+    //console.log(req.session.user);
+    const roll = req.params.rollNumber; 
+    // const roll = 12209008;
 
     if (!roll) {
       return res.status(400).json({ error: "Roll number is required" });
@@ -126,15 +117,12 @@ exports.getAdmittedStudents = async (req, res,next) => {
     }
 
     res.json(student); 
-  } catch (err) {
-    console.error("Error fetching student:", err);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-
-
-
+  
+  // } catch (err) {
+  //   console.error("Error fetching student:", err);
+  //   res.status(500).json({ error: "Internal server error" });
+  // }
+}; 
 exports.registrationReqForExam = async (req, res, next) => {
   try {
     const { rollNumber, examType, eMail, semester, courses, payableAmount, trxID } = req.body;
@@ -193,9 +181,6 @@ exports.registrationReqForExam = async (req, res, next) => {
     });
   }
 };
-
-
-
 exports.getPendingExamRequests = async (req, res) => {
   try {
     // Fetch all requests with status "Pending"
@@ -217,10 +202,6 @@ exports.getPendingExamRequests = async (req, res) => {
     });
   }
 };
-
-
-
-
 exports.approveExamRequest = async (req, res) => {
   try {
     const requestId = req.params._id;
@@ -308,8 +289,6 @@ doc.end();
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-
-
 exports.rejectExamRequest = async (req, res) => {
   try {
     const requestId = req.params.id;
@@ -325,10 +304,6 @@ exports.rejectExamRequest = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-
-
-
-
 exports.getApprovedPdf = async (req, res) => {
   try {
     const { rollNumber, semester } = req.params;
@@ -345,5 +320,46 @@ exports.getApprovedPdf = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+exports.studentLogIn = async (req, res, next) => {
+  try {
+    const { hall, roll, password } = req.body;
+    const userFound = await admittedStudentModel.findOne({ rollNumber: roll, hallName: hall });
+    if (!userFound) {
+      console.log("HIT-1");
+      console.log(hall, roll);
+      return res.status(401).json({ success: false, redirect: "/student-login.html", message: "User not found" });
+    }
+    const isMatch = await bcrypt.compare(password, userFound.password);
+    if (!isMatch) {
+      console.log("HIT-2");
+      return res.status(401).json({ success: false, redirect: "/student-login.html", message: "Incorrect password" });
+    }
+    req.session.isLoggedIn = true;
+    req.session.user = userFound;
+    //console.log("HIT-3");
+    console.log(req.session);
+    return res.status(200).json({ success: true, redirect: `/student-view.html?rollNumber=${userFound.rollNumber}` });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error", redirect: "/student-login.html" });
+  }
+};
+exports.studentLogOut = (req, res, next) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ success: false, message: "Logout failed" });
+    }
+    res.clearCookie('connect.sid'); 
+    console.log("Session destroyed and user logged out");
+    return res.status(200).json({ success: true, message: "Logged out successfully", redirect: "/student-login.html" });
+  });
+};
+exports.renderStudentLogin = (req, res, next) => {
+  res.sendFile(path.join(__dirname, '../views/student-login.html'));
+};
+
+
 
 
