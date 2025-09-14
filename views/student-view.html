@@ -41,12 +41,12 @@
 let fetchedStudent;
 let pollingInterval = null;
 let pollingSemester = null;
-const params = new URLSearchParams(window.location.search);
-const rollNumber = params.get("rollNumber");
+
 // Load student data
 async function loadStudentData() {
   try {
-    const res = await fetch(`http://localhost:3005/admitted-students/${rollNumber}`);
+    const res = await fetch('http://localhost:3005/student-profile', { credentials: 'include' });
+    
     fetchedStudent = await res.json();
     document.getElementById("studentCard").innerHTML = `
       <h2>${fetchedStudent.studentName}</h2>

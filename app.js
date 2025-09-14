@@ -23,53 +23,45 @@ app.use(session({
 secret: 'this-is-secret',
 resave: false,
 saveUninitialized: true,
-store,
- cookie: {
-    secure: false,     // true only on HTTPS
-    httpOnly: true,
-    sameSite: 'none'    // or 'none' if using cross-site cookies with HTTPS
-  }
+store
 })
 );
-/*
-app.use((req,res,next)=>{
-  req.isLoggedIn = req.session.isLoggedIn;
-  next();
-})
 
-app.use("/form", (req,res,next)=>{
-  if(req.isLoggedIn){
-    next();
-  }
-  else{
-    res.redirect('/login');
-  }
-});
-app.use("/result", (req,res,next)=>{
-  if(req.isLoggedIn){
-    next();
-  }
-  else{
-    res.redirect('/login');
-  }
-});
-app.use("/delete", (req,res,next)=>{
-  if(req.isLoggedIn){
-    next();
-  }
-  else{
-    res.redirect('/login');
-  }
-});
-app.use("/edit", (req,res,next)=>{
-  if(req.isLoggedIn){
-    next();
-  }
-  else{
-    res.redirect('/login');
-  }
-});
-*/
+
+
+// app.use("/student", (req,res,next)=>{
+//   if(req.isLoggedIn){
+//     next();
+//   }
+//   else{
+//     res.redirect('/login');
+//   }
+// });
+// app.use("/result", (req,res,next)=>{
+//   if(req.isLoggedIn){
+//     next();
+//   }
+//   else{
+//     res.redirect('/login');
+//   }
+// });
+// app.use("/delete", (req,res,next)=>{
+//   if(req.isLoggedIn){
+//     next();
+//   }
+//   else{
+//     res.redirect('/login');
+//   }
+// });
+// app.use("/edit", (req,res,next)=>{
+//   if(req.isLoggedIn){
+//     next();
+//   }
+//   else{
+//     res.redirect('/login');
+//   }
+// });
+
 app.use(deptAdmissionRouter);
 app.use(express.static(path.join(__dirname, 'views')));
 

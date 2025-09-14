@@ -101,27 +101,25 @@ exports.admitStudent = async (req, res,next) => {
   }
 };
 exports.getAdmittedStudents = async (req, res,next) => {
-    console.log(req.params.rollNumber);
-    //console.log(req.session.user);
-    const roll = req.params.rollNumber; 
-    // const roll = 12209008;
+  console.log("heyyyyy");
+  console.log(req.session.user);
 
-    if (!roll) {
-      return res.status(400).json({ error: "Roll number is required" });
+  if (req.session && req.session.user) {
+    try {
+      const student = await admittedStudentModel.findOne({ rollNumber: req.session.user.rollNumber });
+      if (!student) {
+        return res.status(404).json({ success: false, message: "Student not found" });
+      }
+      res.status(200).json(student);
+    } catch (error) {
+      console.error("Error fetching student profile:", error);
+      res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 
-    const student = await admittedStudentModel.findOne({ rollNumber:roll });
+  } else {
+    res.status(401).json({ success: false, message: "Unauthorized" });
+  }
 
-    if (!student) {
-      return res.status(404).json({ error: "Student not found" });
-    }
-
-    res.json(student); 
-  
-  // } catch (err) {
-  //   console.error("Error fetching student:", err);
-  //   res.status(500).json({ error: "Internal server error" });
-  // }
 }; 
 exports.registrationReqForExam = async (req, res, next) => {
   try {
@@ -322,30 +320,39 @@ exports.getApprovedPdf = async (req, res) => {
 };
 
 exports.studentLogIn = async (req, res, next) => {
-  try {
-    const { hall, roll, password } = req.body;
-    const userFound = await admittedStudentModel.findOne({ rollNumber: roll, hallName: hall });
-    if (!userFound) {
-      console.log("HIT-1");
-      console.log(hall, roll);
-      return res.status(401).json({ success: false, redirect: "/student-login.html", message: "User not found" });
+ 
+ try{
+   const {hall, roll, password} = req.body;
+    if(!hall || !roll || !password){
+      return res.status(400).json({ success: false, message: "All fields are required" });
     }
-    const isMatch = await bcrypt.compare(password, userFound.password);
-    if (!isMatch) {
-      console.log("HIT-2");
-      return res.status(401).json({ success: false, redirect: "/student-login.html", message: "Incorrect password" });
+    const student = await admittedStudentModel.findOne({rollNumber: roll, hallName: hall});
+    if(!student){
+      return res.status(404).json({ success: false, message: "Student not found" });
     }
+    const passwordMatch = await bcrypt.compare(password, student.password);
+    if(!passwordMatch){
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
+    }
+    req.session.user = {
+      id: student._id,
+      rollNumber: student.rollNumber,
+      hallName: student.hallName,
+      studentName: student.studentName,
+      eMail: student.eMail
+      
+    };
     req.session.isLoggedIn = true;
-    req.session.user = userFound;
-    //console.log("HIT-3");
-    console.log(req.session);
-    return res.status(200).json({ success: true, redirect: `/student-view.html?rollNumber=${userFound.rollNumber}` });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ success: false, message: "Server error", redirect: "/student-login.html" });
+    await req.session.save();
+    console.log("Session saved:", req.session);
+    return res.status(200).json({ success: true, message: "Logged in successfully", redirect:"/student-view.html" });
+ }
+ catch(err){
+  console.error("Login error:", err);
+  return res.status(500).json({ success: false, message: "Server error", error: err.message });
   }
 };
-exports.studentLogOut = (req, res, next) => {
+exports.studentLogOut = async (req, res, next) => {
   req.session.destroy(err => {
     if (err) {
       console.error(err);
@@ -356,10 +363,37 @@ exports.studentLogOut = (req, res, next) => {
     return res.status(200).json({ success: true, message: "Logged out successfully", redirect: "/student-login.html" });
   });
 };
-exports.renderStudentLogin = (req, res, next) => {
-  res.sendFile(path.join(__dirname, '../views/student-login.html'));
+exports.checkStudent = async (req, res) => {
+    if (req.session && req.session.user) {
+        
+        res.sendFile(path.join(__dirname, '../views/student-view.html'));
+    } else {
+        res.sendFile(path.join(__dirname, '../views/student-login.html'));
+    }
 };
-
+exports.checkAdmission = async (req, res) => {
+    if (req.session && req.session.user) {
+        
+        res.sendFile(path.join(__dirname, '../views/admin-admission-view.html'));
+    } else {
+        res.sendFile(path.join(__dirname, '../views/admin-admission-login.html'));
+    }
+};
+exports.checkExam = async (req, res) => {
+    if (req.session && req.session.user) {
+        
+        res.sendFile(path.join(__dirname, '../views/admin-exam-control-view.html'));
+    } else {
+        res.sendFile(path.join(__dirname, '../views/admin-exam-control-login.html'));
+    }
+};
+exports.checkDept = async (req, res) => {
+    if (req.session && req.session.user) {
+       res.sendFile(path.join(__dirname, '../views/dept-view.html'));
+    } else {
+        res.sendFile(path.join(__dirname, '../views/dept-login.html'));
+    }
+};
 
 
 
