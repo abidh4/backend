@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const path = require('path');
-const { deptAdmissionRouter } = require('./router/dept-admission-router');
+const { router } = require('./router/dept-admission-router');
+const errorController = require('./controller/error-controller');
 
 
 
@@ -62,9 +63,10 @@ store
 //   }
 // });
 
-app.use(deptAdmissionRouter);
-app.use(express.static(path.join(__dirname, 'views')));
+app.use(router);
 
+app.use(express.static(path.join(__dirname, 'views')));
+app.use(errorController.showErrorMsg);
 
 const PORT  = 3005;
 mongoose.connect("mongodb+srv://root:root@abidict.s8jeg1g.mongodb.net/abidDB?retryWrites=true&w=majority&appName=abidICT")

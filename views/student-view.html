@@ -45,7 +45,7 @@ let pollingSemester = null;
 // Load student data
 async function loadStudentData() {
   try {
-    const res = await fetch('http://localhost:3005/student-profile', { credentials: 'include' });
+    const res = await fetch('http://localhost:3005/g/student-profile', { credentials: 'include' });
     
     fetchedStudent = await res.json();
     document.getElementById("studentCard").innerHTML = `
@@ -63,7 +63,7 @@ document.getElementById("registerExamButton").addEventListener("click", showExam
 
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
-    const res = await fetch('http://localhost:3005/student-logout', {
+    const res = await fetch('http://localhost:3005/p/student-logout', {
       method: 'POST',
       credentials: 'include'
     });
@@ -220,7 +220,7 @@ function showPaymentGateway(examType){
 
 async function submitExam(examType, semester, courses, trxID){
   try{
-    const res = await fetch('http://localhost:3005/register-exam',{
+    const res = await fetch('http://localhost:3005/p/register-exam',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -253,7 +253,7 @@ function startPolling(){
   if(pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(async ()=>{
     try{
-      const res = await fetch(`http://localhost:3005/get-approved-pdf/${fetchedStudent.rollNumber}/${pollingSemester}`);
+      const res = await fetch(`http://localhost:3005/g/get-approved-pdf/${fetchedStudent.rollNumber}/${pollingSemester}`);
       if(res.ok){
         const data = await res.json();
         if(data.pdfBase64){

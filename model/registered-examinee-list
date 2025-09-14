@@ -13,4 +13,4 @@ const RegisteredExamineeSchema = new mongoose.Schema({
     }
   ]
 });
-module.exports = mongoose.model("RegisteredExaminee", RegisteredExamineeSchema);
+module.exports = mongoose.model("registered-examinee", RegisteredExamineeSchema);

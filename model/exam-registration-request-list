@@ -53,4 +53,4 @@ const ExamRegistrationRequestSchema = new mongoose.Schema({
 // Optional: create a compound index to prevent duplicate registrations
 ExamRegistrationRequestSchema.index({ rollNumber: 1, examType: 1, semester: 1 }, { unique: true });
 
-module.exports = mongoose.model("ExamRegistrationRequest", ExamRegistrationRequestSchema);
+module.exports = mongoose.model("exam-registration-requests", ExamRegistrationRequestSchema);

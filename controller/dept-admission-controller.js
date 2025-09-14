@@ -1,13 +1,15 @@
-const deptAdmissionModel = require("../model/admission-candidate-list");
+const admissionCandidateModel = require("../model/admission-candidate-list");
 const bcrypt = require("bcrypt");
 const admittedStudentModel = require("../model/admitted-student-list");
 const examRegistrationReqModel = require("../model/exam-registration-request-list");
-const RegisteredExamineeModel = require("../model/registered-examinee-list");
+const registeredExamineeModel = require("../model/registered-examinee-list");
 const PDFDocument = require("pdfkit");
 const path = require("path");
+
+
 exports.saveData = async(req, res, next) => {
   const { studentName,fathersName,mothersName,deptName,studentSession,gender,contactNo, eMail,address,meritPosition} = req.body;
-  const studentData = new deptAdmissionModel(
+  const studentData = new admissionCandidateModel(
   {studentName,fathersName,mothersName,deptName,studentSession,gender,contactNo,eMail, address,meritPosition}
   );
   try{
@@ -22,7 +24,7 @@ exports.saveData = async(req, res, next) => {
 };
 exports.sendData = async (req, res, next) => {
   try {
-    const candidates = await deptAdmissionModel.find();
+    const candidates = await admissionCandidateModel.find();
     if (!candidates || candidates.length === 0) {
       return res.status(200).json([]);
     }
@@ -43,7 +45,7 @@ exports.deleteEntity = async (req, res,next) => {
       return res.status(400).json({ success: false, message: "Student ID is required" });
     }
 
-    const deleted = await deptAdmissionModel.findByIdAndDelete(id);
+    const deleted = await admissionCandidateModel.findByIdAndDelete(id);
     if (!deleted) {
       return res.status(404).json({ success: false, message: "Student not found" });
     }
@@ -63,7 +65,7 @@ exports.admitStudent = async (req, res,next) => {
 
   try {
     // Find the student in pending requests
-    const pendingStudent = await deptAdmissionModel.findById(_id);
+    const pendingStudent = await admissionCandidateModel.findById(_id);
     if (!pendingStudent) {
       return res.status(404).json({ success: false, message: "Student not found" });
     }
@@ -91,7 +93,7 @@ exports.admitStudent = async (req, res,next) => {
     await admittedStudent.save();
 
     // Delete the student from pending requests
-    await deptAdmissionModel.findByIdAndDelete(_id);
+    await admissionCandidateModel.findByIdAndDelete(_id);
 
     res.json({ success: true, message: "Student admitted successfully" });
 
@@ -100,7 +102,7 @@ exports.admitStudent = async (req, res,next) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-exports.getAdmittedStudents = async (req, res,next) => {
+exports.getStudentInfo = async (req, res,next) => {
   console.log("heyyyyy");
   console.log(req.session.user);
 
@@ -206,7 +208,7 @@ exports.approveExamRequest = async (req, res) => {
     const request = await examRegistrationReqModel.findById(requestId);
     if (!request) return res.status(404).json({ message: "Request not found" });
 
-    let student = await RegisteredExamineeModel.findOne({ rollNumber: request.rollNumber });
+    let student = await registeredExamineeModel.findOne({ rollNumber: request.rollNumber });
 
     // Prevent same semester registration
     if (student && student.registeredFor.some(e => (e.semester === request.semester &&   e.examType === request.examType))) {
@@ -233,7 +235,7 @@ exports.approveExamRequest = async (req, res) => {
         student.registeredFor.push(newExam);
         await student.save();
       } else {
-        student = new RegisteredExamineeModel({
+        student = new registeredExamineeModel({
           rollNumber: request.rollNumber,
           eMail: request.eMail,
           registeredFor: [newExam]
@@ -306,7 +308,7 @@ exports.getApprovedPdf = async (req, res) => {
   try {
     const { rollNumber, semester } = req.params;
 
-    const student = await RegisteredExamineeModel.findOne({ rollNumber });
+    const student = await registeredExamineeModel.findOne({ rollNumber });
     if (!student) return res.status(404).json({ message: "Student not found" });
 
     const exam = student.registeredFor.find(e => e.semester === parseInt(semester));
