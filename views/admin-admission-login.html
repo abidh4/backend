@@ -5,95 +5,130 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admission Admin Login</title>
   <style>
-
     /* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-/* Center container */
-body {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #4f46e5, #3b82f6);
-}
+    /* Animated background */
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #6366f1, #3b82f6, #06b6d4);
+      background-size: 200% 200%;
+      animation: gradientShift 8s ease infinite;
+    }
 
-/* Card */
-.login-container {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-}
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-.login-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  text-align: center;
-}
+    /* Card */
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+    }
 
-.login-card h2 {
-  margin-bottom: 20px;
-  color: #1e293b;
-}
+    .login-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 35px 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      text-align: center;
+      animation: fadeIn 0.8s ease;
+    }
 
-/* Form */
-.form-group {
-  margin-bottom: 15px;
-  text-align: left;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #334155;
-}
+    .login-card h2 {
+      margin-bottom: 25px;
+      font-size: 1.6rem;
+      color: #1e293b;
+    }
 
-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
+    /* Form */
+    .form-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
 
-input:focus {
-  border-color: #3b82f6;
-  outline: none;
-}
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.95rem;
+    }
 
-/* Button */
-button {
-  width: 100%;
-  padding: 12px;
-  background: #3b82f6;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
 
-button:hover {
-  background: #2563eb;
-}
+    input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.3);
+      outline: none;
+    }
 
-/* Responsive */
-@media (max-width: 500px) {
-  .login-card {
-    padding: 20px;
-  }
-}
+    /* Buttons */
+    button, .back-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: block;
+      margin-top: 12px;
+    }
 
+    button {
+      background: linear-gradient(90deg, #6366f1, #3b82f6);
+      color: #fff;
+    }
+
+    button:hover {
+      transform: scale(1.02);
+      filter: brightness(1.1);
+    }
+
+    .back-btn {
+      background: #64748b;
+      color: #fff;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .back-btn:hover {
+      background: #475569;
+      transform: scale(1.02);
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .login-card {
+        padding: 25px 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -109,6 +144,7 @@ button:hover {
           <input type="password" id="password" name="password" required placeholder="Enter password">
         </div>
         <button type="submit">Login</button>
+        <a href="https://abidh4.github.io/frontend/" class="back-btn">Back</a>
       </form>
     </div>
   </div>

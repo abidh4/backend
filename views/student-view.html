@@ -80,7 +80,7 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
 
 // Home
 document.getElementById("homeBtn").addEventListener("click", () => {
-  window.location.href = "http://127.0.0.1:5501/index.html";
+  window.location.href = "https://abidh4.github.io/frontend/";
 });
 
 // -------------------- Exam Registration --------------------
@@ -128,9 +128,9 @@ function showExamForm(examType) {
       const sem = parseInt(semesterSelect.value);
       if(!sem){ courseContainer.style.display="none"; courseList.innerHTML=""; return;}
       courseContainer.style.display="block"; courseList.innerHTML="";
-      for(let i=1;i<=10;i++){
+      for(let i=1;i<10;i++){
         let li = document.createElement("li");
-        li.textContent = `CSE-${sem}0${i}`;
+        li.textContent = `ICT-${sem}0${i}`;
         courseList.appendChild(li);
       }
     });
@@ -158,8 +158,8 @@ function showExamForm(examType) {
       if(!sem){ courseContainer.style.display="none"; courseContainer.innerHTML=""; return;}
       courseContainer.style.display="flex"; courseContainer.innerHTML="";
       for(let s=1;s<=sem;s++){
-        for(let i=1;i<=10;i++){
-          const code = `CSE-${s}0${i}`;
+        for(let i=1;i<10;i++){
+          const code = `ICT-${s}0${i}`;
           const label = document.createElement("label");
           label.className="course-checkbox";
           label.innerHTML = `<input type="checkbox" value="${code}"> ${code}`;
@@ -183,7 +183,7 @@ function showPaymentGateway(examType){
   if(examType === "Semester Final"){
     semester = document.getElementById("semesterSelect").value;
     if(!semester){ alert("Select semester"); return;}
-    for(let i=1;i<=10;i++) courses.push(`CSE-${semester}0${i}`);
+    for(let i=1;i<10;i++) courses.push(`ICT-${semester}0${i}`);
   } else {
     semester = document.getElementById("currentSemester").value;
     if(!semester){ alert("Select at least one semester"); return;}

@@ -268,19 +268,20 @@
 <script>
   // Home redirect
   function goHome() {
-    window.location.href = "http://127.0.0.1:5501/index.html";
+    window.location.href = "https://abidh4.github.io/frontend/";
   }
 
   // Logout with backend call
   async function logout() {
     try {
       const res = await fetch("http://localhost:3005/dept-admin/g/dept-logout", {
-        method: "GET",
-        credentials: "include"
+        method: "GET"
+        
       });
 
       if (!res.ok) throw new Error("Logout failed");
-      window.location.href = "login.html"; // redirect after logout
+      alert("Logged out successfully!");
+      window.location.href = "https://abidh4.github.io/frontend/"; // redirect after logout
     } catch (err) {
       alert("❌ Error logging out: " + err.message);
     }

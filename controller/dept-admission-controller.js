@@ -530,7 +530,6 @@ exports.deptLogOut = async (req, res, next) => {
     }
     res.clearCookie('dept.sid');
     console.log("Session destroyed and user logged out");
-    alert("Logged out successfully");
     res.sendFile(path.join(__dirname, '../views/dept-login.html'));
   });
 
@@ -539,11 +538,11 @@ exports.admissionLogOut = async (req, res, next) => {
   req.session.destroy(err => {
     if (err) {
       console.error(err);
-      alert("Logout failed");
+      
     }
     res.clearCookie('admission.sid');
     console.log("Session destroyed and user logged out");
-    alert("Logged out successfully");
+    
     res.sendFile(path.join(__dirname, '../views/admin-admission-login.html'));
   });
 };
@@ -555,7 +554,7 @@ exports.examLogOut = async (req, res, next) => {
     }
     res.clearCookie('exam.sid');
     console.log("Session destroyed and user logged out");
-    alert("Logged out successfully");
+    
     res.sendFile(path.join(__dirname, '../views/admin-exam-control-login.html'));
   });
 };

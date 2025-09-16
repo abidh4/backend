@@ -201,7 +201,7 @@ async function fetchPendingRequests() {
 
 // Home button
 document.getElementById("homeBtn").addEventListener("click", () => {
-  window.location.href = "http://127.0.0.1:5501/index.html";
+  window.location.href = "https://abidh4.github.io/frontend/";
 });
 
 // Logout button
@@ -210,7 +210,7 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
     const response = await fetch("http://localhost:3005/admission-admin/g/admission-logout");
     if (response.ok) {
       alert("Logged out successfully!");
-      window.location.href = "http://127.0.0.1:5501/index.html";
+      window.location.href = "https://abidh4.github.io/frontend/";
     } else {
       alert("Failed to logout.");
     }
