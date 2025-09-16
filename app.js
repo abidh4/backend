@@ -42,7 +42,7 @@ const examStore = new MongoDBStore({
 });
 
 // ===== Session Middlewares =====
-app.use('/student', session({
+app.use('/stu', session({
   secret: 'studentSecretKey',
   resave: false,
   saveUninitialized: true,
@@ -50,7 +50,7 @@ app.use('/student', session({
   name: 'student.sid'
 }));
 
-app.use('/dept', session({
+app.use('/dept-admin', session({
   secret: 'deptSecretKey',
   resave: false,
   saveUninitialized: true,
@@ -58,7 +58,7 @@ app.use('/dept', session({
   name: 'dept.sid'
 }));
 
-app.use('/admission', session({
+app.use('/admission-admin', session({
   secret: 'admissionSecretKey',
   resave: false,
   saveUninitialized: true,
@@ -66,7 +66,7 @@ app.use('/admission', session({
   name: 'admission.sid'
 }));
 
-app.use('/exam', session({
+app.use('/exam-admin', session({
   secret: 'examSecretKey',
   resave: false,
   saveUninitialized: true,
@@ -75,10 +75,10 @@ app.use('/exam', session({
 }));
 
 // ===== Routers =====
-app.use('/student', studentRouter);
-app.use('/dept', deptRouter);
-app.use('/admission', admissionRouter);
-app.use('/exam', examRouter);
+app.use('/stu', studentRouter);
+app.use('/dept-admin', deptRouter);
+app.use('/admission-admin', admissionRouter);
+app.use('/exam-admin', examRouter);
 
 // ===== Static Files & Error Handling =====
 app.use(express.static(path.join(__dirname, 'views')));

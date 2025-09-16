@@ -101,8 +101,10 @@ button:hover {
   <div class="login-container">
     <div class="login-card">
       <h2>Exam Control Admin Login</h2>
-      <form method="POST" action="/p/exam-login">
+      <form method="POST" action="/exam-admin/p/exam-login">
         <div class="form-group">
+          <label for="adminName">Admin Type</label>
+          <input type="text" id="adminName" name="adminName" required placeholder="Enter admin type">
           <label for="password">Password</label>
           <input type="password" id="password" name="password" required placeholder="Enter password">
         </div>

@@ -100,8 +100,10 @@ button:hover {
   <div class="login-container">
     <div class="login-card">
       <h2>Department Admin Login</h2>
-      <form method="POST" action="/p/dept-login">
+      <form method="POST" action="/dept-admin/p/dept-login">
         <div class="form-group">
+          <label for="deptName">Dept Name</label>
+          <input type="text" id="deptName" name="deptName" required placeholder="Enter department name">
           <label for="password">Password</label>
           <input type="password" id="password" name="password" required placeholder="Enter password">
         </div>

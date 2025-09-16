@@ -115,7 +115,7 @@
 </div>
 
 <div id="formContainer" style="display:none;">
-  <form id="admitForm" action="http://localhost:3005/p/admit-student" method="POST">
+  <form id="admitForm" action="http://localhost:3005/dept-admin/p/admit-student" method="POST">
     
     <label for="studentName">Student Name:</label>
     <input type="text" id="studentName" name="studentName" required>
@@ -241,7 +241,7 @@ admitForm.addEventListener('submit', async e => {
   const payload = Object.fromEntries(formData.entries());
 
   try {
-    const response = await fetch('http://localhost:3005/p/admit-student', {
+    const response = await fetch('http://localhost:3005/dept-admin/p/admit-student', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify(payload)

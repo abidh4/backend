@@ -100,7 +100,7 @@ document.getElementById("proceedBtn").addEventListener("click", async () => {
   }
   const postData = { ...currentStudentData, rollNumber, hallName, password, session };
   try {
-    const response = await fetch("http://localhost:3005/p/admit-perm-student", {
+    const response = await fetch("http://localhost:3005/admission-admin/p/admit-perm-student", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(postData)
@@ -124,7 +124,7 @@ document.getElementById("proceedBtn").addEventListener("click", async () => {
 async function fetchPendingRequests() {
   const output = document.getElementById("output");
   try {
-    const response = await fetch("http://localhost:3005/g/pending-request");
+    const response = await fetch("http://localhost:3005/admission-admin/g/pending-request");
     const data = await response.json();
     if (!data || data.length === 0) {
       output.innerHTML = "<p class='message'>No request found.</p>";
@@ -167,7 +167,7 @@ async function fetchPendingRequests() {
         const studentData = data[index];
         const row = this.closest("tr");
         try {
-          const response = await fetch("http://localhost:3005/d/delete-entity", {
+          const response = await fetch("http://localhost:3005/admission-admin/d/delete-entity", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: studentData._id })

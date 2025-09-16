@@ -1,13 +1,14 @@
 const express = require("express");
-const admssionRouter = express.Router();
+const admissionRouter = express.Router();
 const controller = require("../controller/dept-admission-controller");
 
 
-admssionRouter.get("/g/pending-request", controller.sendData);
-admssionRouter.get("/g/admission", controller.checkAdmission);
+admissionRouter.get("/g/pending-request", controller.sendData);
+admissionRouter.get("/g/admission", controller.checkAdmission);
 
-admssionRouter.post("/p/admit-perm-student", controller.admitStudent);
-admssionRouter.delete("/d/delete-entity", controller.deleteEntity);
+admissionRouter.post("/p/admit-perm-student", controller.admitStudent);
+admissionRouter.delete("/d/delete-entity", controller.deleteEntity);
+admissionRouter.post("/p/admission-login", controller.admissionLogIn);
 
 
-exports.admssionRouter = admssionRouter;
+exports.admissionRouter = admissionRouter;

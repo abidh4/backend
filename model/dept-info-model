@@ -1,0 +1,9 @@
+const mongoose = require("mongoose");
+
+const deptInfoSchema = new mongoose.Schema({
+  deptName: { type: String, required: true, unique: true },
+  
+  password: { type: String, required: true } // bcrypt hash
+});
+
+module.exports = mongoose.model("deptInfo", deptInfoSchema);

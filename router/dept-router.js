@@ -4,5 +4,6 @@ const controller = require("../controller/dept-admission-controller");
 
 deptRouter.post("/p/admit-student", controller.saveData);
 deptRouter.get("/g/dept", controller.checkDept);
+deptRouter.post("/p/dept-login", controller.deptLogIn);
 
 exports.deptRouter = deptRouter;

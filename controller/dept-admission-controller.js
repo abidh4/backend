@@ -3,6 +3,9 @@ const bcrypt = require("bcrypt");
 const admittedStudentModel = require("../model/admitted-student-list");
 const examRegistrationReqModel = require("../model/exam-registration-request-list");
 const registeredExamineeModel = require("../model/registered-examinee-list");
+const examAdminModel = require("../model/exam-admin-model");
+const admissionAdminModel = require("../model/admission-admin-model");
+const deptInfoModel = require("../model/dept-info-model");
 const PDFDocument = require("pdfkit");
 const path = require("path");
 
@@ -396,6 +399,90 @@ exports.checkDept = async (req, res) => {
         res.sendFile(path.join(__dirname, '../views/dept-login.html'));
     }
 };
+exports.deptLogIn = async (req, res, next) => {
+  try {
+    const { deptName, password } = req.body;
+    if (!deptName || !password) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+    const dept = await deptInfoModel.findOne({ deptName: deptName });
+    if (!dept) {
+      res.sendFile(path.join(__dirname, '../views/dept-login.html'));
+    }
+    console.log(dept);
+    const passwordMatch =  (password == dept.password);
+    if (!passwordMatch) {
+      res.sendFile(path.join(__dirname, '../views/dept-login.html'));
 
+    }
+    req.session.user = {
+      id: dept._id,
+      deptName: dept.deptName
+    };
+    req.session.isLoggedIn = true;
+    await req.session.save();
+    console.log("Session saved:", req.session);
+    res.sendFile(path.join(__dirname, '../views/dept-view.html'));
 
-
+  }
+  catch (err) {
+    console.error("Login error:", err);
+    return res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+};
+exports.admissionLogIn = async (req, res, next) => {
+  try {
+    const { adminName, password } = req.body;
+    if (!adminName || !password) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+    const admin = await admissionAdminModel.findOne({ adminName: adminName });
+    if (!admin) {
+      res.sendFile(path.join(__dirname, '../views/admin-admission-login.html'));
+    }
+    const passwordMatch = (password == admin.password);
+    if (!passwordMatch) {
+      res.sendFile(path.join(__dirname, '../views/admin-admission-login.html'));
+    }
+    req.session.user = {
+      id: admin._id,
+      adminName: admin.adminName
+    };
+    req.session.isLoggedIn = true;
+    await req.session.save();
+    console.log("Session saved:", req.session);
+    res.sendFile(path.join(__dirname, '../views/admin-admission-view.html'));
+  }
+  catch (err) {
+    console.error("Login error:", err);
+    return res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+};
+exports.examLogIn = async (req, res, next) => {
+  try {
+    const { adminName, password } = req.body;
+    if (!adminName || !password) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+    const admin = await examAdminModel.findOne({ adminName: adminName });
+    if (!admin) {
+      res.sendFile(path.join(__dirname, '../views/admin-exam-control-login.html'));
+    }
+    const passwordMatch = (password == admin.password);
+    if (!passwordMatch) {
+      res.sendFile(path.join(__dirname, '../views/admin-exam-control-login.html'));
+    }
+    req.session.user = {
+      id: admin._id,
+      adminName: admin.adminName
+    };
+    req.session.isLoggedIn = true;
+    await req.session.save();
+    console.log("Session saved:", req.session);
+    res.sendFile(path.join(__dirname, '../views/admin-exam-control-view.html'));
+  }
+  catch (err) {
+    console.error("Login error:", err);
+    return res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+};

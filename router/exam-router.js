@@ -9,5 +9,6 @@ examRouter.post("/p/approve-exam/:_id", controller.approveExamRequest);
 
 examRouter.get("/g/pending-exam-req", controller.getPendingExamRequests);
 examRouter.get("/g/exam", controller.checkExam);
+examRouter.post("/p/exam-login", controller.examLogIn);
 
 exports.examRouter = examRouter;
