@@ -205,7 +205,7 @@ exports.getPendingExamRequests = async (req, res) => {
     });
   }
 };
-exports.approveExamRequest = async (req, res) => {
+exports.approveExamRequest = async (req, res,next) => {
   try {
     const requestId = req.params._id;
     const request = await examRegistrationReqModel.findById(requestId);
@@ -215,7 +215,8 @@ exports.approveExamRequest = async (req, res) => {
 
     // Prevent same semester registration
     if (student && student.registeredFor.some(e => (e.semester === request.semester &&   e.examType === request.examType))) {
-      return res.status(409).json({ message: `Student already registered for semester ${request.semester}` });
+      return res.json({ message: `Student already registered for semester ${request.semester}` });
+
     }
 
     // Generate PDF
@@ -253,6 +254,9 @@ exports.approveExamRequest = async (req, res) => {
     });
 
     // University Header
+// =======================
+// RECEIPT SECTION
+// =======================
 doc.fontSize(22).text("Comilla University", { align: "center", bold: true });
 doc.fontSize(14).text("Kotbari, Cumilla-3506, Bangladesh", { align: "center" });
 doc.moveDown();
@@ -282,9 +286,41 @@ doc.fontSize(12).text("Status: Paid", { continued: true }).fillColor("green");
 doc.fillColor("black"); // reset color
 doc.moveDown(2);
 
-// Footer
-doc.fontSize(10).text("For any query contact ICT Cell,CoU", { align: "center", italics: true });
+// =======================
+// DOTTED SEPARATOR
+// =======================
+const pageWidth = doc.page.width;
+const margin = doc.page.margins.left;
+
+doc
+  .moveTo(margin, doc.y)
+  .lineTo(pageWidth - margin, doc.y)
+  .dash(5, { space: 5 }) // dotted line
+  .stroke();
+doc.undash(); // reset dash for next drawings
+doc.moveDown(2);
+
+// =======================
+// ADMIT CARD SECTION
+// =======================
+doc.fontSize(18).text("Admit Card", { align: "center", underline: true });
+doc.moveDown(2);
+
+// Student Info again
+doc.fontSize(14).text(" Student Information", { underline: true });
+doc.moveDown(0.5);
+doc.fontSize(12).text(`Roll Number: ${request.rollNumber}`);
+doc.text(`Email: ${request.eMail}`);
+doc.moveDown();
+
+// Exam Details again
+doc.fontSize(14).text(" Exam Details", { underline: true });
+doc.moveDown(0.5);
+doc.fontSize(12).text(`Exam Type: ${request.examType}`);
+doc.text(`Semester: ${request.semester}th`);
+doc.text(`Registered Courses: ${request.courses.join(", ")}`);
 doc.end();
+
 
 
   } catch (err) {
@@ -292,10 +328,10 @@ doc.end();
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-exports.rejectExamRequest = async (req, res) => {
+exports.rejectExamRequest = async (req, res,next) => {
   try {
-    const requestId = req.params.id;
-
+    const requestId = req.params._id;
+    //console.log(req.params);
     const request = await examRegistrationReqModel.findById(requestId);
     if (!request) return res.status(404).json({ message: "Request not found" });
 
@@ -511,7 +547,6 @@ exports.admissionLogOut = async (req, res, next) => {
     res.sendFile(path.join(__dirname, '../views/admin-admission-login.html'));
   });
 };
-
 exports.examLogOut = async (req, res, next) => {
   req.session.destroy(err => {
     if (err) {
@@ -524,9 +559,6 @@ exports.examLogOut = async (req, res, next) => {
     res.sendFile(path.join(__dirname, '../views/admin-exam-control-login.html'));
   });
 };
-
-
-
 exports.showHistory = async(req, res, next) => {
  // res.json(req.session.user);
 

@@ -258,7 +258,13 @@ function renderHistory(history){
   history.forEach((h, index)=>{
     const div = document.createElement("div"); 
     div.style.marginBottom="8px";
-    div.innerHTML = `<b>${h.examType} - Semester ${h.semester}</b>  ${h.date || ''} `;
+    if(h.examType !== "Semester Final")
+  {
+        div.innerHTML = `<b>${h.examType} - Semester ${h.semester} - ${h.courses}</b>`;
+  }
+    else {
+      div.innerHTML = `<b>${h.examType} - Semester ${h.semester} - All Courses of ${h.semester}th Semester &nbsp;</b>`;
+    }
     
     if(h.pdfBase64){
       const downloadBtn = document.createElement("button");
