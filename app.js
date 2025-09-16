@@ -88,13 +88,18 @@ app.use(errorController.showErrorMsg);
 // ===== Connect to MongoDB and Start Server =====
 const PORT = process.env.PORT || 3005;
 const API_BASE_URL = process.env.API_BASE_URL;
-mongoose.connect("mongodb+srv://root:root@abidict.s8jeg1g.mongodb.net/abidDB?retryWrites=true&w=majority")
+const DB_URL = process.env.DB_URL;
+
+mongoose.connect(DB_URL, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true 
+})
 .then(() => {
-  console.log("Connected via mongoose");
-  app.listen(PORT, () => {
-    console.log(`Server running at ${API_BASE_URL || 'localhost'}`);
-  });
+    console.log("Connected via mongoose");
+    app.listen(PORT, () => {
+        console.log(`Server running at ${API_BASE_URL || 'localhost'}`);
+    });
 })
 .catch(err => {
-  console.log("Error occurred!", err);
+    console.error("Error occurred!", err);
 });
