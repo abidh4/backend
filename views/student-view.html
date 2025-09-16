@@ -17,7 +17,7 @@
   .exam-btn { background: #5a85a8; color: #fff; }
   .exam-btn:hover { background: #4c7494; }
   .next-btn { background: #4CAF50; color: #fff; }
-  .next-btn:hover { background: #3d9442; }
+  .next-btn:hover { transform: scale(1.05); }
   .download-btn { background: #1d72b8; color: #fff; }
   .download-btn:hover { background: #155a8a; }
   #historyCard { text-align: left; max-width: 520px; width: 100%; padding: 20px; border-radius: 14px; background:#fff; box-shadow: 0 6px 14px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -51,7 +51,7 @@
 
 <script>
 let fetchedStudent;
-let pollingSemester = null;
+let studentHistory = [];
 
 // Load student data
 async function loadStudentData() {
@@ -103,6 +103,31 @@ function showExamOptions() {
   container.style.display = "block";
 }
 
+// Helper: check duplicates
+function isDuplicateRegistration(examType, semester, selectedCourses){
+  return studentHistory.some(h => 
+    h.examType === examType &&
+    h.semester == semester &&
+    h.courses.length === selectedCourses.length &&
+    h.courses.every(c => selectedCourses.includes(c))
+  );
+}
+
+function updateNextButton(examType, semester, selectedCourses){
+  const nextBtn = document.querySelector("#examOptionsCard .next-btn");
+  if(!nextBtn) return;
+
+  if(isDuplicateRegistration(examType, semester, selectedCourses)){
+    nextBtn.disabled = true;
+    nextBtn.style.background = "#ccc";
+    nextBtn.textContent = "Already Registered";
+  } else {
+    nextBtn.disabled = false;
+    nextBtn.style.background = "#4CAF50";
+    nextBtn.textContent = "Next";
+  }
+}
+
 function showExamForm(examType) {
   const container = document.getElementById("examOptionsCard");
   let semesterOptions = Array.from({length:8},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
@@ -121,9 +146,11 @@ function showExamForm(examType) {
         <button class="exam-btn" onclick="dismissExamCard()">Dismiss</button>
       </div>
     `;
+
     const semesterSelect = document.getElementById("semesterSelect");
     const courseContainer = document.getElementById("courseContainer");
     const courseList = document.getElementById("courseList");
+
     semesterSelect.addEventListener("change", () => {
       const sem = parseInt(semesterSelect.value);
       if(!sem){ courseContainer.style.display="none"; courseList.innerHTML=""; return;}
@@ -133,7 +160,11 @@ function showExamForm(examType) {
         li.textContent = `ICT-${sem}0${i}`;
         courseList.appendChild(li);
       }
+      // Frontend duplicate prevention
+      const allCourses = Array.from({length:9},(_,i)=>`ICT-${sem}0${i+1}`);
+      updateNextButton(examType, sem, allCourses);
     });
+
   } else {
     container.innerHTML = `
       <div class="card">
@@ -172,6 +203,8 @@ function showExamForm(examType) {
           if(cb.checked) selectedCourses.push(cb.value);
           else selectedCourses = selectedCourses.filter(c=>c!==cb.value);
           payableEl.textContent = selectedCourses.length>0 ? 1000 + (selectedCourses.length-1)*300 : 0;
+          // Frontend duplicate check
+          updateNextButton('Improvement', sem, selectedCourses);
         });
       });
     });
@@ -179,17 +212,20 @@ function showExamForm(examType) {
 }
 
 function showPaymentGateway(examType){
-  let semester, courses=[];
+  let semester, courses=[], payableAmount = 0;
+
   if(examType === "Semester Final"){
     semester = document.getElementById("semesterSelect").value;
     if(!semester){ alert("Select semester"); return;}
     for(let i=1;i<10;i++) courses.push(`ICT-${semester}0${i}`);
+    payableAmount = 5000; // Fixed for Semester Final
   } else {
     semester = document.getElementById("currentSemester").value;
     if(!semester){ alert("Select at least one semester"); return;}
     const checkboxes = document.querySelectorAll("#courseSelectContainer input[type='checkbox']:checked");
     if(checkboxes.length===0){ alert("Select at least one course"); return;}
     courses = Array.from(checkboxes).map(cb=>cb.value);
+    payableAmount = courses.length>0 ? 1000 + (courses.length-1)*300 : 0;
   }
 
   const container = document.getElementById("examOptionsCard");
@@ -197,21 +233,22 @@ function showPaymentGateway(examType){
     <div class="card">
       <h3>Shonar-Bangla Payment Gateway</h3>
       <div class="payment-box">
-        <p>Amount to pay: <b>${courses.length>0 ? 1000 + (courses.length-1)*300 : 0}</b></p>
+        <p>Amount to pay: <b>${payableAmount}</b></p>
         <button class="next-btn" id="payNowBtn">Pay Now</button>
       </div>
       <br>
       <button class="exam-btn" onclick="dismissExamCard()">Cancel Payment</button>
     </div>
   `;
+
   document.getElementById("payNowBtn").addEventListener("click", ()=>{
     const dummyTxnId = "TXN"+Math.floor(Math.random()*1000000);
     alert(`Payment Successful! Transaction ID: ${dummyTxnId}`);
-    submitExam(examType, semester, courses, dummyTxnId);
+    submitExam(examType, semester, courses, dummyTxnId, payableAmount);
   });
 }
 
-async function submitExam(examType, semester, courses, trxID){
+async function submitExam(examType, semester, courses, trxID, payableAmount){
   try{
     const res = await fetch('http://localhost:3005/stu/p/register-exam',{
       method:'POST',
@@ -220,14 +257,14 @@ async function submitExam(examType, semester, courses, trxID){
         rollNumber: fetchedStudent.rollNumber,
         eMail: fetchedStudent.eMail,
         examType, semester, courses,
-        payableAmount:courses.length>0 ? 1000 + (courses.length-1)*300 : 0,
+        payableAmount,
         trxID
       })
     });
     if(!res.ok) throw new Error("Failed to register request");
     await res.json();
-    dismissExamCard(); // close form
-    fetchHistory(); // immediately refresh history
+    dismissExamCard();
+    fetchHistory();
   } catch(e){ alert("Error submitting exam: " + e.message); }
 }
 
@@ -236,12 +273,13 @@ function dismissExamCard(){
   document.getElementById("registerBtnContainer").style.display="block";
 }
 
-// -------------------- History Polling --------------------
+// -------------------- History --------------------
 async function fetchHistory(){
   try{
     const res = await fetch('http://localhost:3005/stu/g/show-history');
     if(res.ok){
       const data = await res.json();
+      studentHistory = data;
       renderHistory(data);
     }
   } catch(e){ console.log("Failed-->", e.message); }
@@ -258,11 +296,9 @@ function renderHistory(history){
   history.forEach((h, index)=>{
     const div = document.createElement("div"); 
     div.style.marginBottom="8px";
-    if(h.examType !== "Semester Final")
-  {
-        div.innerHTML = `<b>${h.examType} - Semester ${h.semester} - ${h.courses}</b>`;
-  }
-    else {
+    if(h.examType !== "Semester Final"){
+      div.innerHTML = `<b>${h.examType} - Semester ${h.semester} - ${h.courses}</b>`;
+    } else {
       div.innerHTML = `<b>${h.examType} - Semester ${h.semester} - All Courses of ${h.semester}th Semester &nbsp;</b>`;
     }
     
@@ -297,7 +333,7 @@ function downloadPDF(base64){
   link.click();
 }
 
-// Poll every 5 seconds
+// Poll every 3 seconds
 setInterval(fetchHistory, 3000);
 fetchHistory();
 </script>

@@ -57,8 +57,9 @@
 <div id="admitModal">
   <div class="modal-content">
     <h2>Admit Student</h2>
+    <p style="text-align: center; color: red;">*All the boxes must be filled up*</p>
     <label>Roll Number</label>
-    <input type="text" id="rollNumber" />
+    <input type="text" id="rollNumber" minlength="8" placeholder="Minimum 8 digits" />
     <label>Hall Name</label>
     <select id="hallName">
       <option value="">-- Select Hall --</option>
@@ -113,6 +114,7 @@ document.getElementById("proceedBtn").addEventListener("click", async () => {
     alert("Please fill in all fields.");
     return;
   }
+  
   const postData = { ...currentStudentData, rollNumber, hallName, password, session };
   try {
     const response = await fetch("http://localhost:3005/admission-admin/p/admit-perm-student", {
