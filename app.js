@@ -23,22 +23,22 @@ app.use(express.urlencoded({ extended: true }));
 
 // ===== MongoDB Session Stores =====
 const studentStore = new MongoDBStore({
-  uri: "mongodb+srv://root:root@abidict.s8jeg1g.mongodb.net/abidDB?retryWrites=true&w=majority",
+  uri: process.env.DB_URL,
   collection: 'studentSessions'
 });
 
 const deptStore = new MongoDBStore({
-  uri: "mongodb+srv://root:root@abidict.s8jeg1g.mongodb.net/abidDB?retryWrites=true&w=majority",
+  uri: process.env.DB_URL,
   collection: 'deptSessions'
 });
 
 const admissionStore = new MongoDBStore({
-  uri: "mongodb+srv://root:root@abidict.s8jeg1g.mongodb.net/abidDB?retryWrites=true&w=majority",
+  uri: process.env.DB_URL,
   collection: 'admissionSessions'
 });
 
 const examStore = new MongoDBStore({
-  uri: "mongodb+srv://root:root@abidict.s8jeg1g.mongodb.net/abidDB?retryWrites=true&w=majority",
+  uri: process.env.DB_URL,
   collection: 'examSessions'
 });
 
