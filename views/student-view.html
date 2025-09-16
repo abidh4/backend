@@ -160,7 +160,6 @@ function showExamForm(examType) {
         li.textContent = `ICT-${sem}0${i}`;
         courseList.appendChild(li);
       }
-      // Frontend duplicate prevention
       const allCourses = Array.from({length:9},(_,i)=>`ICT-${sem}0${i+1}`);
       updateNextButton(examType, sem, allCourses);
     });
@@ -202,9 +201,14 @@ function showExamForm(examType) {
         cb.addEventListener("change", ()=>{
           if(cb.checked) selectedCourses.push(cb.value);
           else selectedCourses = selectedCourses.filter(c=>c!==cb.value);
-          payableEl.textContent = selectedCourses.length>0 ? 1000 + (selectedCourses.length-1)*300 : 0;
-          // Frontend duplicate check
-          updateNextButton('Improvement', sem, selectedCourses);
+
+          if(examType === "Improvement"){
+            payableEl.textContent = selectedCourses.length>0 ? 1000 + (selectedCourses.length-1)*300 : 0;
+          } else if(examType === "F-Removal"){
+            payableEl.textContent = selectedCourses.length>0 ? 800 + (selectedCourses.length-1)*200 : 0;
+          }
+
+          updateNextButton(examType, sem, selectedCourses);
         });
       });
     });
@@ -218,14 +222,19 @@ function showPaymentGateway(examType){
     semester = document.getElementById("semesterSelect").value;
     if(!semester){ alert("Select semester"); return;}
     for(let i=1;i<10;i++) courses.push(`ICT-${semester}0${i}`);
-    payableAmount = 5000; // Fixed for Semester Final
+    payableAmount = 5000;
   } else {
     semester = document.getElementById("currentSemester").value;
     if(!semester){ alert("Select at least one semester"); return;}
     const checkboxes = document.querySelectorAll("#courseSelectContainer input[type='checkbox']:checked");
     if(checkboxes.length===0){ alert("Select at least one course"); return;}
     courses = Array.from(checkboxes).map(cb=>cb.value);
-    payableAmount = courses.length>0 ? 1000 + (courses.length-1)*300 : 0;
+
+    if(examType === "Improvement"){
+      payableAmount = courses.length>0 ? 1000 + (courses.length-1)*300 : 0;
+    } else if(examType === "F-Removal"){
+      payableAmount = courses.length>0 ? 800 + (courses.length-1)*200 : 0;
+    }
   }
 
   const container = document.getElementById("examOptionsCard");
