@@ -16,13 +16,69 @@
     padding: 20px;
     color: #333;
   }
-  h1 {
+
+  /* Header */
+  header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
     margin-bottom: 25px;
-    color: #1e88e5;
+    background: #2c3e50;
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  nav {
+    display: flex;
+    gap: 12px;
+  }
+  nav button {
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  nav button.home {
+    background: linear-gradient(135deg,#42a5f5,#64b5f6);
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(66,165,245,0.3);
+  }
+  nav button.home:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(66,165,245,0.45);
+  }
+  nav button.logout {
+    background: linear-gradient(135deg,#e53935,#ef5350);
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(239,83,80,0.3);
+  }
+  nav button.logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(239,83,80,0.45);
+  }
+
+  /* Page title */
+  .page-title {
+    margin-bottom: 25px;
+    color: #2c3e50;
     font-size: 2rem;
     font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
   }
+
+  /* Options */
   .options-container {
     display: flex;
     gap: 20px;
@@ -38,24 +94,28 @@
     color: #fff;
     font-weight: 600;
     transition: all 0.25s ease;
-    box-shadow: 0 4px 10px rgba(67,160,71,0.2);
+    box-shadow: 0 4px 10px rgba(67,160,71,0.25);
   }
   button.option:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 14px rgba(67,160,71,0.35);
+    box-shadow: 0 6px 14px rgba(67,160,71,0.4);
   }
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    max-width: 520px;
-    background: #fff;
-    padding: 25px;
-    border-radius: 16px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-    animation: fadeIn 0.4s ease;
-  }
+
+  /* Form */
+ form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 700px;  /* increased width for rectangle shape */
+  min-width: 500px;  /* ensures decent size on desktop */
+  background: #fff;
+  padding: 30px 35px; /* slightly more padding for comfortable spacing */
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  animation: fadeIn 0.4s ease;
+}
+  label { font-weight: 600; color: #444; }
   input, select, textarea {
     padding: 12px;
     font-size: 1rem;
@@ -69,6 +129,8 @@
     box-shadow: 0 0 6px rgba(30,136,229,0.25);
   }
   textarea { resize: vertical; min-height: 80px; }
+
+  /* Buttons */
   .button-group {
     display: flex;
     gap: 12px;
@@ -84,11 +146,13 @@
     transition: all 0.25s ease;
   }
   button.submit { background: linear-gradient(135deg,#1e88e5,#42a5f5); color: #fff; box-shadow:0 3px 8px rgba(30,136,229,0.3);}
-  button.submit:hover { transform: translateY(-2px); box-shadow: 0 5px 12px rgba(30,136,229,0.45);}
+  button.submit:hover { transform: translateY(-2px); box-shadow:0 5px 12px rgba(30,136,229,0.45);}
   button.clear { background:#f5f5f5; color:#333; border:1px solid #ccc;}
   button.clear:hover { background:#eeeeee; border-color:#bbb; transform: translateY(-2px);}
   button.cancel { background: linear-gradient(135deg,#e53935,#ef5350); color:#fff; box-shadow:0 3px 8px rgba(239,83,80,0.3);}
   button.cancel:hover { transform: translateY(-2px); box-shadow:0 5px 12px rgba(239,83,80,0.45);}
+
+  /* Result Card */
   .result {
     width:100%;
     max-width:520px;
@@ -97,196 +161,216 @@
     border-radius:12px;
     box-shadow:0 4px 10px rgba(0,0,0,0.08);
     display:none;
+    animation: fadeIn 0.4s ease;
   }
   .result.success { background:#e8f5e9; border-left:6px solid #43a047; color:#1b5e20;}
   .result.error { background:#ffebee; border-left:6px solid #e53935; color:#b71c1c;}
   .result p { margin-bottom:14px; font-weight:600;}
   .result .result-buttons { display:flex; gap:12px; justify-content:flex-end; }
+
   @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
-  @media (max-width:600px){ form{padding:18px;} .button-group{flex-direction:column;} .button-group button{width:100%;} }
+
+  @media (max-width:600px){
+    form{padding:18px;}
+    .button-group{flex-direction:column;}
+    .button-group button{width:100%;}
+    nav { flex-direction: column; gap: 8px; }
+  }
+  @media (max-width: 768px){
+  form {
+    max-width: 95%;
+    min-width: unset;
+    padding: 20px;
+  }
+}
 </style>
 </head>
 <body>
 
-<h1>Department View</h1>
+  <!-- Header -->
+  <header>
+    <h1>Department Panel</h1>
+    <nav>
+      <button class="home" onclick="goHome()">Home</button>
+      <button class="logout" onclick="logout()"> Logout</button>
+    </nav>
+  </header>
 
-<div class="options-container" id="optionsContainer">
-  <button class="option" id="admitBtn">Admit Student</button>
-</div>
+  <h2 class="page-title">📘 Department View</h2>
 
-<div id="formContainer" style="display:none;">
-  <form id="admitForm" action="http://localhost:3005/dept-admin/p/admit-student" method="POST">
-    
-    <label for="studentName">Student Name:</label>
-    <input type="text" id="studentName" name="studentName" required>
-
-    <label for="fathersName">Father's Name:</label>
-    <input type="text" id="fathersName" name="fathersName" required>
-
-    <label for="mothersName">Mother's Name:</label>
-    <input type="text" id="mothersName" name="mothersName" required>
-
-    <label for="deptName">Department:</label>
-    <select id="deptName" name="deptName" required>
-      <option value="">--Select Department--</option>
-      <option value="CSE">CSE</option>
-      <option value="EEE">EEE</option>
-      <option value="Civil Engineering">Civil Engineering</option>
-      <option value="Architecture">Architecture</option>
-      <option value="Business Administration">Business Administration</option>
-      <option value="Economics">Economics</option>
-      <option value="English">English</option>
-      <option value="Bengali">Bengali</option>
-      <option value="History">History</option>
-      <option value="Political Science">Political Science</option>
-      <option value="Sociology">Sociology</option>
-      <option value="Psychology">Psychology</option>
-      <option value="Law">Law</option>
-      <option value="Pharmacy">Pharmacy</option>
-      <option value="Mathematics">Mathematics</option>
-      <option value="Physics">Physics</option>
-      <option value="Chemistry">Chemistry</option>
-      <option value="Statistics">Statistics</option>
-      <option value="Botany">Botany</option>
-    </select>
-
-    <label for="studentSession">Session:</label>
-    <select id="studentSession" name="studentSession" required>
-      <option value="">--Select Session--</option>
-      <option value="2025-26">2025-26</option>
-    </select>
-
-    <label for="gender">Gender:</label>
-    <select id="gender" name="gender" required>
-      <option value="">--Select--</option>
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      <option value="other">Other</option>
-    </select>
-
-    <label for="contactNo">Contact No:</label>
-    <input type="tel" id="contactNo" name="contactNo" 
-           pattern="^\+?8801[3-9][0-9]{8}$" 
-           placeholder="+8801687151563" required>
-
-    <label for="eMail">Email:</label>
-    <input type="email" id="eMail" name="eMail" required>
-
-    <label for="address">Address:</label>
-    <textarea id="address" name="address" rows="3" required></textarea>
-
-    <label for="meritPosition">Merit Position:</label>
-    <input type="number" id="meritPosition" name="meritPosition" min="1" required>
-
-    <div class="button-group">
-      <button type="submit" class="submit">Submit</button>
-      <button type="button" class="clear" id="clearBtn">Clear</button>
-      <button type="button" class="cancel" id="cancelBtn">Cancel</button>
-    </div>
-  </form>
-</div>
-
-<!-- Submission result -->
-<div id="submissionResult" class="result" role="status" aria-live="polite">
-  <p id="resultText"></p>
-  <div class="result-buttons">
-    <button id="admitNewBtn" class="submit">Admit New</button>
-    <button id="closeBtn" class="clear">Close</button>
+  <div class="options-container" id="optionsContainer">
+    <button class="option" id="admitBtn">Admit Student</button>
   </div>
-</div>
+
+  <!-- Form -->
+  <div id="formContainer" style="display:none;">
+    <form id="admitForm">
+      <label for="studentName">Student Name:</label>
+      <input type="text" id="studentName" name="studentName" required>
+
+      <label for="fathersName">Father's Name:</label>
+      <input type="text" id="fathersName" name="fathersName" required>
+
+      <label for="mothersName">Mother's Name:</label>
+      <input type="text" id="mothersName" name="mothersName" required>
+
+      <label for="deptName">Department:</label>
+      <select id="deptName" name="deptName" required>
+        <option value="">--Select Department--</option>
+        <option value="ICT">ICT</option>
+      </select>
+
+      <label for="studentSession">Session:</label>
+      <select id="studentSession" name="studentSession" required>
+        <option value="">--Select Session--</option>
+        <option value="2025-26">2025-26</option>
+      </select>
+
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender" required>
+        <option value="">--Select--</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="contactNo">Contact No:</label>
+      <input type="tel" id="contactNo" name="contactNo" 
+              
+             placeholder="Contact Number" required>
+
+      <label for="eMail">Email:</label>
+      <input type="email" id="eMail" name="eMail" required>
+
+      <label for="address">Address:</label>
+      <textarea id="address" name="address" rows="3" required></textarea>
+
+      <label for="meritPosition">Merit Position:</label>
+      <input type="number" id="meritPosition" name="meritPosition" min="1" required>
+
+      <div class="button-group">
+        <button type="submit" class="submit">Submit</button>
+        <button type="button" class="clear" id="clearBtn">Clear</button>
+        <button type="button" class="cancel" id="cancelBtn">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Submission result -->
+  <div id="submissionResult" class="result" role="status" aria-live="polite">
+    <p id="resultText"></p>
+    <div class="result-buttons">
+      <button id="admitNewBtn" class="submit">Admit New</button>
+      <button id="closeBtn" class="clear">Close</button>
+    </div>
+  </div>
 
 <script>
-const admitBtn = document.getElementById('admitBtn');
-const formContainer = document.getElementById('formContainer');
-const optionsContainer = document.getElementById('optionsContainer');
-const clearBtn = document.getElementById('clearBtn');
-const cancelBtn = document.getElementById('cancelBtn');
-const admitForm = document.getElementById('admitForm');
-const submissionResult = document.getElementById('submissionResult');
-const resultText = document.getElementById('resultText');
-const admitNewBtn = document.getElementById('admitNewBtn');
-const closeBtn = document.getElementById('closeBtn');
+  // Home redirect
+  function goHome() {
+    window.location.href = "http://127.0.0.1:5501/index.html";
+  }
 
-// Show form
-admitBtn.addEventListener('click', () => {
-  submissionResult.style.display = 'none';
-  formContainer.style.display = 'block';
-  optionsContainer.style.display = 'none';
-  setTimeout(()=>document.getElementById('studentName').focus(),50);
-});
+  // Logout with backend call
+  async function logout() {
+    try {
+      const res = await fetch("http://localhost:3005/dept-admin/g/dept-logout", {
+        method: "GET",
+        credentials: "include"
+      });
 
-// Clear form
-clearBtn.addEventListener('click', () => admitForm.reset());
+      if (!res.ok) throw new Error("Logout failed");
+      window.location.href = "login.html"; // redirect after logout
+    } catch (err) {
+      alert("❌ Error logging out: " + err.message);
+    }
+  }
 
-// Cancel form
-cancelBtn.addEventListener('click', () => {
-  formContainer.style.display = 'none';
-  optionsContainer.style.display = 'flex';
-  submissionResult.style.display = 'none';
-  admitForm.reset();
-});
+  // --- Existing JS for form handling ---
+  const admitBtn = document.getElementById('admitBtn');
+  const formContainer = document.getElementById('formContainer');
+  const optionsContainer = document.getElementById('optionsContainer');
+  const clearBtn = document.getElementById('clearBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const admitForm = document.getElementById('admitForm');
+  const submissionResult = document.getElementById('submissionResult');
+  const resultText = document.getElementById('resultText');
+  const admitNewBtn = document.getElementById('admitNewBtn');
+  const closeBtn = document.getElementById('closeBtn');
 
-// Submit form
-admitForm.addEventListener('submit', async e => {
-  e.preventDefault();
-  submissionResult.style.display = 'none';
-  submissionResult.classList.remove('success','error');
+  admitBtn.addEventListener('click', () => {
+    submissionResult.style.display = 'none';
+    formContainer.style.display = 'block';
+    optionsContainer.style.display = 'none';
+    setTimeout(()=>document.getElementById('studentName').focus(),50);
+  });
 
-  const submitBtn = admitForm.querySelector('button[type="submit"]');
-  const originalText = submitBtn.textContent;
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Submitting...';
+  clearBtn.addEventListener('click', () => admitForm.reset());
+  cancelBtn.addEventListener('click', () => {
+    formContainer.style.display = 'none';
+    optionsContainer.style.display = 'flex';
+    submissionResult.style.display = 'none';
+    admitForm.reset();
+  });
 
-  const formData = new FormData(admitForm);
-  const payload = Object.fromEntries(formData.entries());
+  admitForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    submissionResult.style.display = 'none';
+    submissionResult.classList.remove('success','error');
 
-  try {
-    const response = await fetch('http://localhost:3005/dept-admin/p/admit-student', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
+    const submitBtn = admitForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
 
-    const json = await response.json().catch(()=>null);
-    if(json && json.status===true){
-      resultText.textContent = 'Student admitted successfully.';
-      submissionResult.classList.add('success');
-      submissionResult.style.display = 'block';
-      formContainer.style.display = 'none';
-      admitForm.reset();
-    } else {
-      resultText.textContent = (json && json.message)? json.message : 'Submission failed.';
+    const formData = new FormData(admitForm);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch('http://localhost:3005/dept-admin/p/admit-student', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+
+      const json = await response.json().catch(()=>null);
+      if(json && json.status===true){
+        resultText.textContent = 'Submitted to Administration (Admission) successfully.';
+        submissionResult.classList.add('success');
+        submissionResult.style.display = 'block';
+        formContainer.style.display = 'none';
+        admitForm.reset();
+      } else {
+        resultText.textContent = (json && json.message)? json.message : 'Submission failed.';
+        submissionResult.classList.add('error');
+        submissionResult.style.display = 'block';
+      }
+    } catch(err){
+      resultText.textContent = 'Network error. Please try again.';
       submissionResult.classList.add('error');
       submissionResult.style.display = 'block';
+    } finally{
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
     }
-  } catch(err){
-    resultText.textContent = 'Network error. Please try again.';
-    submissionResult.classList.add('error');
-    submissionResult.style.display = 'block';
-  } finally{
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalText;
-  }
-});
+  });
 
-// Admit New
-admitNewBtn.addEventListener('click', () => {
-  submissionResult.style.display='none';
-  submissionResult.classList.remove('success','error');
-  admitForm.reset();
-  optionsContainer.style.display='none';
-  formContainer.style.display='block';
-  setTimeout(()=>document.getElementById('studentName').focus(),50);
-});
+  admitNewBtn.addEventListener('click', () => {
+    submissionResult.style.display='none';
+    submissionResult.classList.remove('success','error');
+    admitForm.reset();
+    optionsContainer.style.display='none';
+    formContainer.style.display='block';
+    setTimeout(()=>document.getElementById('studentName').focus(),50);
+  });
 
-// Close
-closeBtn.addEventListener('click', () => {
-  submissionResult.style.display='none';
-  submissionResult.classList.remove('success','error');
-  admitForm.reset();
-  formContainer.style.display='none';
-  optionsContainer.style.display='flex';
-});
+  closeBtn.addEventListener('click', () => {
+    submissionResult.style.display='none';
+    submissionResult.classList.remove('success','error');
+    admitForm.reset();
+    formContainer.style.display='none';
+    optionsContainer.style.display='flex';
+  });
 </script>
 
 </body>

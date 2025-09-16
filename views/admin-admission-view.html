@@ -6,7 +6,15 @@
 <title>Admin Admission View</title>
 <style>
   body { font-family: "Segoe UI", Arial, sans-serif; margin: 0; padding: 0; background: #f0f4f8; color: #333; }
-  header { background: #004080; color: white; text-align: center; padding: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+  header { background: #004080; color: white; display: flex; justify-content: space-between; align-items: center; padding: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+  header h1 { margin: 0; font-size: 1.5rem; }
+  .header-buttons { display: flex; gap: 0.5rem; }
+  .header-buttons button { padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500; }
+  .home-btn { background: #00282e; color: white; }
+  .home-btn:hover { background: #138496; }
+  .logout-btn { background: #1b0003; color: white; }
+  .logout-btn:hover { background: #c82333; }
+
   main { max-width: 1200px; margin: 2rem auto; padding: 1rem; }
   .table-container { margin-top: 2rem; overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
@@ -33,7 +41,14 @@
 </style>
 </head>
 <body>
-<header><h1>Admin Admission View</h1></header>
+<header>
+  <h1>Admin Admission View</h1>
+  <div class="header-buttons">
+    <button class="home-btn" id="homeBtn">Home</button>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+</header>
+
 <main>
   <div id="output" class="table-container"></div>
 </main>
@@ -183,6 +198,27 @@ async function fetchPendingRequests() {
     document.getElementById("output").innerHTML = "<p class='message'>Error fetching data.</p>";
   }
 }
+
+// Home button
+document.getElementById("homeBtn").addEventListener("click", () => {
+  window.location.href = "http://127.0.0.1:5501/index.html";
+});
+
+// Logout button
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  try {
+    const response = await fetch("http://localhost:3005/admission-admin/g/admission-logout");
+    if (response.ok) {
+      alert("Logged out successfully!");
+      window.location.href = "http://127.0.0.1:5501/index.html";
+    } else {
+      alert("Failed to logout.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error during logout.");
+  }
+});
 
 // Start polling automatically
 fetchPendingRequests(); // initial load

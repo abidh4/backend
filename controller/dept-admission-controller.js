@@ -323,7 +323,6 @@ exports.getApprovedPdf = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-
 exports.studentLogIn = async (req, res, next) => {
  
  try{
@@ -486,3 +485,70 @@ exports.examLogIn = async (req, res, next) => {
     return res.status(500).json({ success: false, message: "Server error", error: err.message });
   }
 };
+exports.deptLogOut = async (req, res, next) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error(err);
+      alert("Logout failed");
+
+    }
+    res.clearCookie('dept.sid');
+    console.log("Session destroyed and user logged out");
+    alert("Logged out successfully");
+    res.sendFile(path.join(__dirname, '../views/dept-login.html'));
+  });
+
+};
+exports.admissionLogOut = async (req, res, next) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error(err);
+      alert("Logout failed");
+    }
+    res.clearCookie('admission.sid');
+    console.log("Session destroyed and user logged out");
+    alert("Logged out successfully");
+    res.sendFile(path.join(__dirname, '../views/admin-admission-login.html'));
+  });
+};
+
+exports.examLogOut = async (req, res, next) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error(err);
+      alert("Logout failed");
+    }
+    res.clearCookie('exam.sid');
+    console.log("Session destroyed and user logged out");
+    alert("Logged out successfully");
+    res.sendFile(path.join(__dirname, '../views/admin-exam-control-login.html'));
+  });
+};
+
+
+
+exports.showHistory = async(req, res, next) => {
+ // res.json(req.session.user);
+
+  //res.json({ message: "This is a placeholder for student history" });
+
+  if (req.session && req.session.user) {
+    try {
+      const student = await registeredExamineeModel.findOne({ rollNumber: req.session.user.rollNumber });
+      if (!student) {
+        return res.status(404).json({ success: false, message: "Student not found" });
+      }
+      res.status(200).json(student.registeredFor);
+    } catch (error) {
+      console.error("Error fetching student history:", error);
+      res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+  } else {
+    res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
+
+}
+
+
+

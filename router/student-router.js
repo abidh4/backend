@@ -6,7 +6,7 @@ const controller = require("../controller/dept-admission-controller");
 studentRouter.get("/g/student", controller.checkStudent);
 studentRouter.get("/g/student-profile", controller.getStudentInfo);
 studentRouter.get("/g/get-approved-pdf/:rollNumber/:semester", controller.getApprovedPdf);
-
+studentRouter.get("/g/show-history", controller.showHistory);
 
 
 studentRouter.post("/p/student-logout", controller.studentLogOut);

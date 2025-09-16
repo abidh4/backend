@@ -15,11 +15,40 @@
       align-items: center;
       color: #333;
     }
-    h1 {
-      margin-bottom: 20px;
-      color: #2c3e50;
-      font-size: 1.8rem;
+    header {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2c3e50;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    .header-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .header-buttons button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .home-btn { background: #002025; color: white; }
+    .home-btn:hover { background: #138496; transform: scale(1.05); }
+    .logout-btn { background: #5e0a01; color: white; }
+    .logout-btn:hover { background: #c0392b; transform: scale(1.05); }
+
     .status-message {
       margin: 15px 0;
       font-weight: 500;
@@ -68,7 +97,13 @@
   </style>
 </head>
 <body>
-  <h1>📋 Admin Exam Control</h1>
+  <header>
+    <h1>📋 Admin Exam Control</h1>
+    <div class="header-buttons">
+      <button class="home-btn" id="homeBtn">Home</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </header>
 
   <div id="status" class="status-message">Loading pending requests...</div>
   <div id="tableContainer"></div>
@@ -163,6 +198,27 @@
         document.getElementById("status").textContent = "❌ Error rejecting request: " + err.message;
       }
     }
+
+    // Home button
+    document.getElementById("homeBtn").addEventListener("click", () => {
+      window.location.href = "http://127.0.0.1:5501/index.html";
+    });
+
+    // Logout button
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      try {
+        const response = await fetch("http://localhost:3005/exam-admin/g/exam-logout");
+        if (response.ok) {
+          alert("Logged out successfully!");
+          window.location.href = "http://127.0.0.1:5501/index.html";
+        } else {
+          alert("Failed to logout.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error during logout.");
+      }
+    });
 
     // Start polling every 3 seconds
     fetchPendingRequests(); // first fetch

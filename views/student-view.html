@@ -7,7 +7,9 @@
 <style>
   body { font-family: "Segoe UI", Arial, sans-serif; background: #f4f7fb; display: flex; flex-direction: column; align-items: center; padding: 25px; color: #333; }
   h1 { margin-bottom: 25px; color: #2c3e50; font-size: 1.8rem; font-weight: 700; }
-  .logout-btn { position: absolute; top: 20px; right: 20px; background:#e74c3c; color:#fff; padding:10px 16px; border:none; border-radius:8px; cursor:pointer; font-weight:600; }
+  .top-btn { position: absolute; top: 20px; padding:10px 16px; border:none; border-radius:8px; cursor:pointer; font-weight:600; color:#fff; }
+  #logoutBtn { right: 20px; background:#e74c3c; }
+  #homeBtn { right: 120px; background:#3498db; }
   .card { background: #fff; padding: 25px 30px; border-radius: 14px; box-shadow: 0 6px 14px rgba(0,0,0,0.1); max-width: 520px; width: 100%; margin-bottom: 20px; text-align: center; transition: transform 0.2s; }
   .card:hover { transform: translateY(-3px); }
   button { padding: 12px 22px; margin: 8px 6px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: transform 0.2s, background 0.3s; }
@@ -18,6 +20,8 @@
   .next-btn:hover { background: #3d9442; }
   .download-btn { background: #1d72b8; color: #fff; }
   .download-btn:hover { background: #155a8a; }
+  #historyCard { text-align: left; max-width: 520px; width: 100%; padding: 20px; border-radius: 14px; background:#fff; box-shadow: 0 6px 14px rgba(0,0,0,0.1); margin-bottom: 20px; }
+  #historyList div button { margin-left: 5px; }
   select, input[type="text"] { width: 95%; padding: 12px; margin: 12px 0; border-radius: 10px; border: 1px solid #ccc; font-size: 1rem; transition: border 0.3s; }
   select:focus, input[type="text"]:focus { outline: none; border-color: #5a85a8; box-shadow: 0 0 5px rgba(90,133,168,0.5); }
   .course-list { text-align: left; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; }
@@ -29,9 +33,17 @@
 <body>
 
 <h1>🎓 Student Portal</h1>
-<button id="logoutBtn" class="logout-btn">Logout</button>
+<button id="homeBtn" class="top-btn">Home</button>
+<button id="logoutBtn" class="top-btn">Logout</button>
 
 <div id="studentCard" class="card"></div>
+
+<!-- History Box -->
+<div id="historyCard" class="card">
+  <h3>📜 History</h3>
+  <div id="historyList">You have no history</div>
+</div>
+
 <div class="button-container" id="registerBtnContainer">
   <button id="registerExamButton" class="exam-btn">Register for Exam</button>
 </div>
@@ -39,14 +51,12 @@
 
 <script>
 let fetchedStudent;
-let pollingInterval = null;
 let pollingSemester = null;
 
 // Load student data
 async function loadStudentData() {
   try {
     const res = await fetch('http://localhost:3005/stu/g/student-profile', { credentials: 'include' });
-    
     fetchedStudent = await res.json();
     document.getElementById("studentCard").innerHTML = `
       <h2>${fetchedStudent.studentName}</h2>
@@ -58,26 +68,23 @@ async function loadStudentData() {
 }
 loadStudentData();
 
-document.getElementById("registerExamButton").addEventListener("click", showExamOptions);
-
-
+// Logout
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
-    const res = await fetch('http://localhost:3005/stu/p/student-logout', {
-      method: 'POST',
-      credentials: 'include'
-    });
+    const res = await fetch('http://localhost:3005/stu/p/student-logout', { method: 'POST', credentials: 'include' });
     const data = await res.json();
-    
-    if(data.success){
-      window.location.href = data.redirect;
-    } else {
-      alert("Logout failed: " + data.message);
-    }
-  } catch(e){
-    alert("Error: " + e.message);
-  }
+    if(data.success){ window.location.href = data.redirect; } 
+    else { alert("Logout failed: " + data.message); }
+  } catch(e){ alert("Error: " + e.message); }
 });
+
+// Home
+document.getElementById("homeBtn").addEventListener("click", () => {
+  window.location.href = "http://127.0.0.1:5501/index.html";
+});
+
+// -------------------- Exam Registration --------------------
+document.getElementById("registerExamButton").addEventListener("click", showExamOptions);
 
 function showExamOptions() {
   const container = document.getElementById("examOptionsCard");
@@ -105,15 +112,10 @@ function showExamForm(examType) {
       <div class="card">
         <h3>Register for Semester Final</h3>
         <label for="semesterSelect">Select Semester:</label>
-        <select id="semesterSelect">
-          <option value="">-- Select Semester --</option>
-          ${semesterOptions}
-        </select>
+        <select id="semesterSelect"><option value="">-- Select Semester --</option>${semesterOptions}</select>
         <div id="courseContainer" class="course-list" style="display:none;">
-          <p><b>Courses for selected semester:</b></p>
-          <ul id="courseList"></ul>
+          <p><b>Courses for selected semester:</b></p><ul id="courseList"></ul>
         </div>
-        
         <button class="next-btn" onclick="showPaymentGateway('Semester Final')">Next</button>
         <br><br>
         <button class="exam-btn" onclick="dismissExamCard()">Dismiss</button>
@@ -124,7 +126,7 @@ function showExamForm(examType) {
     const courseList = document.getElementById("courseList");
     semesterSelect.addEventListener("change", () => {
       const sem = parseInt(semesterSelect.value);
-      if (!sem) { courseContainer.style.display="none"; courseList.innerHTML=""; return;}
+      if(!sem){ courseContainer.style.display="none"; courseList.innerHTML=""; return;}
       courseContainer.style.display="block"; courseList.innerHTML="";
       for(let i=1;i<=10;i++){
         let li = document.createElement("li");
@@ -137,10 +139,7 @@ function showExamForm(examType) {
       <div class="card">
         <h3>Register for ${examType}</h3>
         <label for="currentSemester">Select Current Semester:</label>
-        <select id="currentSemester">
-          <option value="">-- Select Semester --</option>
-          ${semesterOptions}
-        </select>
+        <select id="currentSemester"><option value="">-- Select Semester --</option>${semesterOptions}</select>
         <div id="courseSelectContainer" class="course-list" style="display:none;"></div>
         <p><b>Payable Amount:</b> <span id="payableAmount" style="color:#e67e22">0</span></p>
         <button class="next-btn" onclick="showPaymentGateway('${examType}')">Next</button>
@@ -153,13 +152,11 @@ function showExamForm(examType) {
     const payableEl = document.getElementById("payableAmount");
     let selectedCourses = [];
 
-    semesterSelect.addEventListener("change", ()=> {
+    semesterSelect.addEventListener("change", ()=>{
       const sem = parseInt(semesterSelect.value);
-      selectedCourses=[];
-      payableEl.textContent = "0";
+      selectedCourses=[]; payableEl.textContent="0";
       if(!sem){ courseContainer.style.display="none"; courseContainer.innerHTML=""; return;}
-      courseContainer.style.display="flex";
-      courseContainer.innerHTML="";
+      courseContainer.style.display="flex"; courseContainer.innerHTML="";
       for(let s=1;s<=sem;s++){
         for(let i=1;i<=10;i++){
           const code = `CSE-${s}0${i}`;
@@ -174,26 +171,24 @@ function showExamForm(examType) {
         cb.addEventListener("change", ()=>{
           if(cb.checked) selectedCourses.push(cb.value);
           else selectedCourses = selectedCourses.filter(c=>c!==cb.value);
-          let amount = selectedCourses.length>0 ? 1000 + (selectedCourses.length-1)*300 : 0;
-          payableEl.textContent = amount;
+          payableEl.textContent = selectedCourses.length>0 ? 1000 + (selectedCourses.length-1)*300 : 0;
         });
       });
     });
   }
 }
 
-
 function showPaymentGateway(examType){
   let semester, courses=[];
   if(examType === "Semester Final"){
     semester = document.getElementById("semesterSelect").value;
-    if(!semester){ alert("Select semester"); return; }
+    if(!semester){ alert("Select semester"); return;}
     for(let i=1;i<=10;i++) courses.push(`CSE-${semester}0${i}`);
   } else {
     semester = document.getElementById("currentSemester").value;
-    if(!semester){ alert("Select at least one semester"); return; }
+    if(!semester){ alert("Select at least one semester"); return;}
     const checkboxes = document.querySelectorAll("#courseSelectContainer input[type='checkbox']:checked");
-    if(checkboxes.length===0){ alert("Select at least one course"); return; }
+    if(checkboxes.length===0){ alert("Select at least one course"); return;}
     courses = Array.from(checkboxes).map(cb=>cb.value);
   }
 
@@ -209,11 +204,9 @@ function showPaymentGateway(examType){
       <button class="exam-btn" onclick="dismissExamCard()">Cancel Payment</button>
     </div>
   `;
-
   document.getElementById("payNowBtn").addEventListener("click", ()=>{
     const dummyTxnId = "TXN"+Math.floor(Math.random()*1000000);
     alert(`Payment Successful! Transaction ID: ${dummyTxnId}`);
-    pollingSemester = semester;
     submitExam(examType, semester, courses, dummyTxnId);
   });
 }
@@ -233,56 +226,74 @@ async function submitExam(examType, semester, courses, trxID){
     });
     if(!res.ok) throw new Error("Failed to register request");
     await res.json();
-    document.getElementById("examOptionsCard").innerHTML = `
-      <div class="card">
-        <h3>📨 Submitted. Waiting for Approval...</h3>
-      </div>
-    `;
-    startPolling();
-  } catch(e){
-    document.getElementById("examOptionsCard").innerHTML = `
-      <div class="card">
-        <h3>❌ Error: ${e.message}</h3>
-        <button class="exam-btn" onclick="dismissExamCard()">Dismiss</button>
-      </div>
-    `;
-  }
-}
-
-function startPolling(){
-  if(pollingInterval) clearInterval(pollingInterval);
-  pollingInterval = setInterval(async ()=>{
-    try{
-      const res = await fetch(`http://localhost:3005/stu/g/get-approved-pdf/${fetchedStudent.rollNumber}/${pollingSemester}`);
-      if(res.ok){
-        const data = await res.json();
-        if(data.pdfBase64){
-          clearInterval(pollingInterval);
-          document.getElementById("examOptionsCard").innerHTML = `
-            <div class="card">
-              <h3>✅ Approved!</h3>
-              <p>Your registration has been approved. Click below to download your receipt:</p>
-              <button id="downloadReceiptBtn" class="download-btn">Download Receipt</button>
-            </div>
-          `;
-          document.getElementById("registerBtnContainer").style.display = "block";
-          document.getElementById("downloadReceiptBtn").addEventListener("click", ()=>{
-            const link = document.createElement("a");
-            link.href = `data:application/pdf;base64,${data.pdfBase64}`;
-            link.download = `exam_registration.pdf`;
-            link.click();
-          });
-        }
-      }
-    }catch(e){ console.log("Polling error:", e.message);}
-  },3000);
+    dismissExamCard(); // close form
+    fetchHistory(); // immediately refresh history
+  } catch(e){ alert("Error submitting exam: " + e.message); }
 }
 
 function dismissExamCard(){
   document.getElementById("examOptionsCard").style.display="none";
   document.getElementById("registerBtnContainer").style.display="block";
 }
-</script>
 
+// -------------------- History Polling --------------------
+async function fetchHistory(){
+  try{
+    const res = await fetch('http://localhost:3005/stu/g/show-history');
+    if(res.ok){
+      const data = await res.json();
+      renderHistory(data);
+    }
+  } catch(e){ console.log("Failed-->", e.message); }
+}
+
+function renderHistory(history){
+  const historyList = document.getElementById("historyList");
+  historyList.innerHTML = "";
+  if(!history || history.length===0){
+    historyList.textContent = "You have no history";
+    return;
+  }
+
+  history.forEach((h, index)=>{
+    const div = document.createElement("div"); 
+    div.style.marginBottom="8px";
+    div.innerHTML = `<b>${h.examType} - Semester ${h.semester}</b>  ${h.date || ''} `;
+    
+    if(h.pdfBase64){
+      const downloadBtn = document.createElement("button");
+      downloadBtn.className = "download-btn"; downloadBtn.textContent="Download";
+      downloadBtn.addEventListener("click", ()=>downloadPDF(h.pdfBase64));
+      div.appendChild(downloadBtn);
+    }
+
+    if(h.canDelete){
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "exam-btn"; deleteBtn.textContent="Delete";
+      deleteBtn.style.marginLeft="6px";
+      deleteBtn.addEventListener("click", async ()=>{
+        try{
+          await fetch(`http://localhost:3005/exam-admin/p/delete-history/${index}`, { method:'DELETE', credentials:'include' });
+          fetchHistory(); 
+        } catch(e){ console.log("Delete error:", e.message);}
+      });
+      div.appendChild(deleteBtn);
+    }
+
+    historyList.appendChild(div);
+  });
+}
+
+function downloadPDF(base64){
+  const link = document.createElement("a");
+  link.href = `data:application/pdf;base64,${base64}`;
+  link.download = "exam_registration.pdf";
+  link.click();
+}
+
+// Poll every 5 seconds
+setInterval(fetchHistory, 3000);
+fetchHistory();
+</script>
 </body>
 </html>
