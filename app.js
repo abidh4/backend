@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const mongoose = require('mongoose');
@@ -85,12 +86,13 @@ app.use(express.static(path.join(__dirname, 'views')));
 app.use(errorController.showErrorMsg);
 
 // ===== Connect to MongoDB and Start Server =====
-const PORT = 3005;
+const PORT = process.env.PORT || 3005;
+const API_BASE_URL = process.env.API_BASE_URL;
 mongoose.connect("mongodb+srv://root:root@abidict.s8jeg1g.mongodb.net/abidDB?retryWrites=true&w=majority")
 .then(() => {
   console.log("Connected via mongoose");
   app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Server running at ${API_BASE_URL || 'localhost'}`);
   });
 })
 .catch(err => {

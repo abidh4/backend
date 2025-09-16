@@ -275,7 +275,7 @@
   // Logout with backend call
   async function logout() {
     try {
-      const res = await fetch("http://localhost:3005/dept-admin/g/dept-logout", {
+      const res = await fetch("/dept-admin/g/dept-logout", {
         method: "GET"
         
       });
@@ -329,7 +329,7 @@
     const payload = Object.fromEntries(formData.entries());
 
     try {
-      const response = await fetch('http://localhost:3005/dept-admin/p/admit-student', {
+      const response = await fetch('/dept-admin/p/admit-student', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify(payload)

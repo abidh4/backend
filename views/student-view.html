@@ -56,7 +56,7 @@ let studentHistory = [];
 // Load student data
 async function loadStudentData() {
   try {
-    const res = await fetch('http://localhost:3005/stu/g/student-profile', { credentials: 'include' });
+    const res = await fetch('/stu/g/student-profile', { credentials: 'include' });
     fetchedStudent = await res.json();
     document.getElementById("studentCard").innerHTML = `
       <h2>${fetchedStudent.studentName}</h2>
@@ -71,7 +71,7 @@ loadStudentData();
 // Logout
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
-    const res = await fetch('http://localhost:3005/stu/p/student-logout', { method: 'POST', credentials: 'include' });
+    const res = await fetch('/stu/p/student-logout', { method: 'POST', credentials: 'include' });
     const data = await res.json();
     if(data.success){ window.location.href = data.redirect; } 
     else { alert("Logout failed: " + data.message); }
@@ -250,7 +250,7 @@ function showPaymentGateway(examType){
 
 async function submitExam(examType, semester, courses, trxID, payableAmount){
   try{
-    const res = await fetch('http://localhost:3005/stu/p/register-exam',{
+    const res = await fetch('/stu/p/register-exam',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -276,7 +276,7 @@ function dismissExamCard(){
 // -------------------- History --------------------
 async function fetchHistory(){
   try{
-    const res = await fetch('http://localhost:3005/stu/g/show-history');
+    const res = await fetch('/stu/g/show-history');
     if(res.ok){
       const data = await res.json();
       studentHistory = data;
@@ -315,7 +315,7 @@ function renderHistory(history){
       deleteBtn.style.marginLeft="6px";
       deleteBtn.addEventListener("click", async ()=>{
         try{
-          await fetch(`http://localhost:3005/exam-admin/p/delete-history/${index}`, { method:'DELETE', credentials:'include' });
+          await fetch(`/exam-admin/p/delete-history/${index}`, { method:'DELETE', credentials:'include' });
           fetchHistory(); 
         } catch(e){ console.log("Delete error:", e.message);}
       });

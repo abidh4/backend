@@ -113,7 +113,7 @@
 
     async function fetchPendingRequests() {
       try {
-        const response = await fetch("http://localhost:3005/exam-admin/g/pending-exam-req");
+        const response = await fetch("/exam-admin/g/pending-exam-req");
         if (!response.ok) throw new Error("Failed to fetch pending requests");
         const data = await response.json();
 
@@ -173,7 +173,7 @@
 
     async function approveRequest(id) {
       try {
-        const res = await fetch(`http://localhost:3005/exam-admin/p/approve-exam/${id}`, {
+        const res = await fetch(`/exam-admin/p/approve-exam/${id}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" }
         });
@@ -187,7 +187,7 @@
 
     async function rejectRequest(id) {
       try {
-        const res = await fetch(`http://localhost:3005/exam-admin/d/reject-exam/${id}`, {
+        const res = await fetch(`/exam-admin/d/reject-exam/${id}`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" }
         });
@@ -207,7 +207,7 @@
     // Logout button
     document.getElementById("logoutBtn").addEventListener("click", async () => {
       try {
-        const response = await fetch("http://localhost:3005/exam-admin/g/exam-logout");
+        const response = await fetch("/exam-admin/g/exam-logout");
         if (response.ok) {
           alert("Logged out successfully!");
           window.location.href = "https://abidh4.github.io/frontend/";
